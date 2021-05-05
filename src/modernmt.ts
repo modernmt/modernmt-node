@@ -1,0 +1,161 @@
+import {HttpClient, ImportJob, Memory, TranslateOptions, Translation} from "./types";
+import {Https} from "./utils/https";
+import {Fetch} from "./utils/fetch";
+import {createReadStream} from "fs";
+
+export class ModernMT {
+
+    private readonly http: HttpClient;
+    public readonly memories: MemoryServices;
+
+    constructor(apiKey: string, platform = "modernmt-node", platformVersion = "1.0.2") {
+        const headers: any = {
+            "MMT-ApiKey": apiKey,
+            "MMT-Platform": platform,
+            "MMT-PlatformVersion": platformVersion
+        };
+
+        if (typeof fetch === "function")
+            this.http = new Fetch("https://api.modernmt.com", headers);
+        else
+            this.http = new Https("api.modernmt.com", headers);
+
+        this.memories = new MemoryServices(this);
+    }
+
+    listSupportedLanguages(): Promise<string[]> {
+        return this.http.send(null, "get", "/translate/languages");
+    }
+
+    async translate(source: string, target: string, q: string | string[], hints?: number[],
+                    contextVector?: string, options?: TranslateOptions): Promise<Translation | Translation[]> {
+        const multipleSentences = Array.isArray(q);
+
+        const res = await this.http.send(null, "get", "/translate", {
+            source: source ? source : undefined,
+            target,
+            q,
+            context_vector: contextVector ? contextVector : undefined,
+            hints: hints ? hints : undefined,
+            priority: options ? options.priority : undefined,
+            project_id: options ? options.projectId : undefined,
+            multiline: options ? options.multiline : undefined,
+            timeout: options ? options.timeout : undefined,
+        });
+
+        if (!multipleSentences)
+            return new Translation(res);
+
+        const translations = []
+        for (const el of res)
+            translations.push(new Translation(el));
+
+        return translations;
+    }
+
+    async getContextVector(source: string, target: string | string[], text: string,
+                           hints?: number[], limit?: number): Promise<string | Map<string, string>> {
+        const multipleTargets = Array.isArray(target);
+
+        const res = await this.http.send(null, "get", "/context-vector", {
+            source,
+            targets: multipleTargets ? target : [target],
+            text,
+            hints: hints ? hints : undefined,
+            limit: limit ? limit : undefined
+        });
+
+        return multipleTargets ? res.vectors : res.vectors[<string>target];
+    }
+
+    async getContextVectorFromFile(source: string, target: string | string[], file: any, hints?: number[],
+                                   limit?: number, compression?: "gzip"): Promise<string | Map<string, string>> {
+        const multipleTargets = Array.isArray(target);
+
+        if (typeof file === "string")
+            file = createReadStream(file);
+
+        const res = await this.http.send(null, "get", "/context-vector", {
+            source,
+            targets: multipleTargets ? target : [target],
+            hints: hints ? hints : undefined,
+            limit: limit ? limit : undefined,
+            compression: compression ? compression : undefined
+        }, {
+            content: file
+        });
+
+        return multipleTargets ? res.vectors : res.vectors[<string>target];
+    }
+
+}
+
+export class MemoryServices {
+
+    private readonly http: HttpClient;
+
+    constructor(mmt: ModernMT) {
+        this.http = (<any>mmt).http;
+    }
+
+    async list(): Promise<Memory[]> {
+        const res = await this.http.send(null, "get", "/memories");
+
+        const memories = [];
+        for (const el of res)
+            memories.push(new Memory(el));
+
+        return memories;
+    }
+
+    get(id: number): Promise<Memory> {
+        return this.http.send(Memory, "get", `/memories/${id}`);
+    }
+
+    create(name: string, description?: string, externalId?: string): Promise<Memory> {
+        return this.http.send(Memory,"post", "/memories", {
+            name,
+            description: description ? description : undefined,
+            external_id: externalId ? externalId : undefined
+        });
+    }
+
+    edit(id: number, name?: string, description?: string): Promise<Memory> {
+        return this.http.send(Memory,"put", `/memories/${id}`, {
+            name: name ? name : undefined,
+            description: description ? description : undefined
+        });
+    }
+
+    delete(id: number): Promise<Memory> {
+        return this.http.send(Memory, "delete", `/memories/${id}`);
+    }
+
+    add(id: number, source: string, target: string, sentence: string, translation: string,
+              tuid?: string): Promise<ImportJob> {
+        const data = {source, target, sentence, translation, tuid: tuid ? tuid : undefined};
+        return this.http.send(ImportJob, "post", `/memories/${id}/content`, data);
+    }
+
+    replace(id: number, tuid: string, source: string, target: string,
+                  sentence: string, translation: string): Promise<ImportJob> {
+        const data = {tuid, source, target, sentence, translation};
+        return this.http.send(ImportJob, "put", `/memories/${id}/content`, data);
+    }
+
+    import(id: number, tmx: any, compression?: "gzip"): Promise<ImportJob> {
+        if (typeof tmx === "string")
+            tmx = createReadStream(tmx);
+
+        return this.http.send(ImportJob, "post", `/memories/${id}/content`, {
+            compression: compression ? compression : undefined
+        }, {
+            tmx
+        });
+    }
+
+    getImportStatus(uuid: string): Promise<ImportJob> {
+        return this.http.send(ImportJob, "get", `/import-jobs/${uuid}`);
+    }
+
+}
