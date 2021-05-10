@@ -35,7 +35,7 @@ export class Model {
 export class Translation extends Model {
 
     public readonly translation?: string;
-    public readonly contextVector?: Map<number, number>;
+    public readonly contextVector?: string;
     public readonly characters?: number;
     public readonly billedCharacters?: number;
     public readonly detectedLanguage?: string;
@@ -51,7 +51,7 @@ export class Memory extends Model {
     public readonly id?: number;
     public readonly name?: string;
     public readonly description?: string;
-    public readonly creationDate?: Date;
+    public readonly creationDate?: string;
 
     constructor(data: any) {
         super(data, ["id", "name", "description", "creationDate"]);
