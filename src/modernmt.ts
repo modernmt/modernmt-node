@@ -53,31 +53,27 @@ export class ModernMT {
         return translations;
     }
 
-    async getContextVector(source: string, target: string | string[], text: string,
+    async getContextVector(source: string, targets: string | string[], text: string,
                            hints?: number[], limit?: number): Promise<string | Map<string, string>> {
-        const multipleTargets = Array.isArray(target);
-
         const res = await this.http.send(null, "get", "/context-vector", {
             source,
-            targets: multipleTargets ? target : [target],
+            targets,
             text,
             hints: hints ? hints : undefined,
             limit: limit ? limit : undefined
         });
 
-        return multipleTargets ? res.vectors : res.vectors[<string>target];
+        return Array.isArray(targets) ? res.vectors : res.vectors[<string>targets];
     }
 
-    async getContextVectorFromFile(source: string, target: string | string[], file: any, hints?: number[],
+    async getContextVectorFromFile(source: string, targets: string | string[], file: any, hints?: number[],
                                    limit?: number, compression?: "gzip"): Promise<string | Map<string, string>> {
-        const multipleTargets = Array.isArray(target);
-
         if (typeof file === "string")
             file = createReadStream(file);
 
         const res = await this.http.send(null, "get", "/context-vector", {
             source,
-            targets: multipleTargets ? target : [target],
+            targets,
             hints: hints ? hints : undefined,
             limit: limit ? limit : undefined,
             compression: compression ? compression : undefined
@@ -85,7 +81,7 @@ export class ModernMT {
             content: file
         });
 
-        return multipleTargets ? res.vectors : res.vectors[<string>target];
+        return Array.isArray(targets) ? res.vectors : res.vectors[<string>targets];
     }
 
 }
