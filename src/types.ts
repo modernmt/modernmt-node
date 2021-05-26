@@ -5,7 +5,7 @@ export interface HttpClient {
 
 export class ModernMTException extends Error {
 
-    private status: number;
+    public readonly status: number;
 
     constructor(status: number, type: string, message: string) {
         super(message);
