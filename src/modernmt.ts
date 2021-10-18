@@ -36,7 +36,7 @@ export class ModernMT {
             target,
             q,
             context_vector: contextVector ? contextVector : undefined,
-            hints: hints ? hints : undefined,
+            hints: hints ? hints.join(",") : undefined,
             priority: options ? options.priority : undefined,
             project_id: options ? options.projectId : undefined,
             multiline: options ? options.multiline : undefined,
@@ -59,7 +59,7 @@ export class ModernMT {
             source,
             targets,
             text,
-            hints: hints ? hints : undefined,
+            hints: hints ? hints.join(",") : undefined,
             limit: limit ? limit : undefined
         });
 
@@ -74,7 +74,7 @@ export class ModernMT {
         const res = await this.http.send(null, "get", "/context-vector", {
             source,
             targets,
-            hints: hints ? hints : undefined,
+            hints: hints ? hints.join(",") : undefined,
             limit: limit ? limit : undefined,
             compression: compression ? compression : undefined
         }, {
