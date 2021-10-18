@@ -22,52 +22,54 @@ export type TranslateOptions = {
     timeout?: number
 }
 
-export class Model {
+export class Translation {
 
-    constructor(data: any, fields: string[]) {
-        for (const key of fields) {
-            if (data[key] !== undefined) (<any>this)[key] = data[key];
-        }
-    }
-
-}
-
-export class Translation extends Model {
-
-    public readonly translation?: string;
+    public readonly translation: string;
+    public readonly characters: number;
+    public readonly billedCharacters: number;
     public readonly contextVector?: string;
-    public readonly characters?: number;
-    public readonly billedCharacters?: number;
     public readonly detectedLanguage?: string;
 
     constructor(data: any) {
-        super(data, ["translation", "contextVector", "characters", "billedCharacters", "detectedLanguage"]);
+        this.translation = data.translation;
+        this.characters = data.characters;
+        this.billedCharacters = data.billedCharacters;
+
+        if (data.contextVector) this.contextVector = data.contextVector;
+        if (data.detectedLanguage) this.detectedLanguage = data.detectedLanguage;
     }
 
 }
 
-export class Memory extends Model {
+export class Memory {
 
-    public readonly id?: number;
-    public readonly name?: string;
+    public readonly id: number;
+    public readonly name: string;
     public readonly description?: string;
-    public readonly creationDate?: string;
+    public readonly creationDate: string;
 
     constructor(data: any) {
-        super(data, ["id", "name", "description", "creationDate"]);
+        this.id = data.id;
+        this.name = data.name;
+        this.creationDate = data.creationDate;
+
+        if (data.description) this.description = data.description;
     }
 
 }
 
-export class ImportJob extends Model {
+export class ImportJob {
 
-    public readonly id?: number;
-    public readonly memory?: number;
-    public readonly size?: number;
-    public readonly progress?: number;
+    public readonly id: number;
+    public readonly memory: number;
+    public readonly size: number;
+    public readonly progress: number;
 
     constructor(data: any) {
-        super(data, ["id", "memory", "size", "progress"]);
+        this.id = data.id;
+        this.memory = data.memory;
+        this.size = data.size;
+        this.progress = data.progress;
     }
 
 }
