@@ -60,7 +60,7 @@ export class Memory {
 
 export class ImportJob {
 
-    public readonly id: number;
+    public readonly id: string;
     public readonly memory: number;
     public readonly size: number;
     public readonly progress: number;
