@@ -139,7 +139,7 @@ export class MemoryServices {
         return this.http.send(ImportJob, "put", `/memories/${id}/content`, data);
     }
 
-    import(id: number, tmx: any, compression?: "gzip"): Promise<ImportJob> {
+    import(id: number, tmx: any, compression?: string): Promise<ImportJob> {
         if (typeof tmx === "string")
             tmx = createReadStream(tmx);
 
