@@ -19,7 +19,8 @@ export type TranslateOptions = {
     priority?: string,
     projectId?: string,
     multiline?: boolean,
-    timeout?: number
+    timeout?: number,
+    format?: string
 }
 
 export class Translation {

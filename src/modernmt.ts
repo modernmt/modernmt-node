@@ -41,6 +41,7 @@ export class ModernMT {
             project_id: options ? options.projectId : undefined,
             multiline: options ? options.multiline : undefined,
             timeout: options ? options.timeout : undefined,
+            format: options ? options.format : undefined
         });
 
         if (!multipleSentences)
