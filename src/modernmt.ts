@@ -27,7 +27,7 @@ export class ModernMT {
         return this.http.send(null, "get", "/translate/languages");
     }
 
-    async translate(source: string, target: string, q: string | string[], hints?: number[],
+    async translate(source: string, target: string, q: string | string[], hints?: (number | string)[],
                     contextVector?: string, options?: TranslateOptions): Promise<Translation | Translation[]> {
         const multipleSentences = Array.isArray(q);
 
@@ -55,7 +55,7 @@ export class ModernMT {
     }
 
     async getContextVector(source: string, targets: string | string[], text: string,
-                           hints?: number[], limit?: number): Promise<string | Map<string, string>> {
+                           hints?: (number | string)[], limit?: number): Promise<string | Map<string, string>> {
         const res = await this.http.send(null, "get", "/context-vector", {
             source,
             targets,
@@ -67,7 +67,7 @@ export class ModernMT {
         return Array.isArray(targets) ? res.vectors : res.vectors[<string>targets];
     }
 
-    async getContextVectorFromFile(source: string, targets: string | string[], file: any, hints?: number[],
+    async getContextVectorFromFile(source: string, targets: string | string[], file: any, hints?: (number | string)[],
                                    limit?: number, compression?: "gzip"): Promise<string | Map<string, string>> {
         if (typeof file === "string")
             file = createReadStream(file);
@@ -105,7 +105,7 @@ export class MemoryServices {
         return memories;
     }
 
-    get(id: number): Promise<Memory> {
+    get(id: number | string): Promise<Memory> {
         return this.http.send(Memory, "get", `/memories/${id}`);
     }
 
@@ -117,30 +117,30 @@ export class MemoryServices {
         });
     }
 
-    edit(id: number, name?: string, description?: string): Promise<Memory> {
+    edit(id: number | string, name?: string, description?: string): Promise<Memory> {
         return this.http.send(Memory,"put", `/memories/${id}`, {
             name: name ? name : undefined,
             description: description ? description : undefined
         });
     }
 
-    delete(id: number): Promise<Memory> {
+    delete(id: number | string): Promise<Memory> {
         return this.http.send(Memory, "delete", `/memories/${id}`);
     }
 
-    add(id: number, source: string, target: string, sentence: string, translation: string,
+    add(id: number | string, source: string, target: string, sentence: string, translation: string,
               tuid?: string): Promise<ImportJob> {
         const data = {source, target, sentence, translation, tuid: tuid ? tuid : undefined};
         return this.http.send(ImportJob, "post", `/memories/${id}/content`, data);
     }
 
-    replace(id: number, tuid: string, source: string, target: string,
+    replace(id: number | string, tuid: string, source: string, target: string,
                   sentence: string, translation: string): Promise<ImportJob> {
         const data = {tuid, source, target, sentence, translation};
         return this.http.send(ImportJob, "put", `/memories/${id}/content`, data);
     }
 
-    import(id: number, tmx: any, compression?: string): Promise<ImportJob> {
+    import(id: number | string, tmx: any, compression?: string): Promise<ImportJob> {
         if (typeof tmx === "string")
             tmx = createReadStream(tmx);
 
