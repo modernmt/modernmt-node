@@ -29,7 +29,6 @@ export class ModernMT {
 
     async translate(source: string, target: string, q: string | string[], hints?: (number | string)[],
                     contextVector?: string, options?: TranslateOptions): Promise<Translation | Translation[]> {
-        const multipleSentences = Array.isArray(q);
 
         const res = await this.http.send(null, "get", "/translate", {
             source: source ? source : undefined,
@@ -44,7 +43,7 @@ export class ModernMT {
             format: options ? options.format : undefined
         });
 
-        if (!multipleSentences)
+        if (!Array.isArray(q))
             return new Translation(res);
 
         const translations = []
