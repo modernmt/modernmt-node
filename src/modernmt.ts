@@ -1,4 +1,4 @@
-import {HttpClient, ImportJob, Memory, TranslateOptions, Translation} from "./types";
+import {DetectedLanguage, HttpClient, ImportJob, Memory, TranslateOptions, Translation} from "./types";
 import {Https} from "./utils/https";
 import {Fetch} from "./utils/fetch";
 import {createReadStream} from "fs";
@@ -25,6 +25,18 @@ export class ModernMT {
 
     listSupportedLanguages(): Promise<string[]> {
         return this.http.send(null, "get", "/translate/languages");
+    }
+
+    async detectLanguage(q: string | string[], format?: string): Promise<DetectedLanguage | DetectedLanguage[]> {
+        const res = await this.http.send(null, "get", "/translate/detect", {q, format});
+        if (!Array.isArray(q))
+            return new DetectedLanguage(res);
+
+        const languages = [];
+        for (const el of res)
+            languages.push(new DetectedLanguage(el));
+
+        return languages;
     }
 
     async translate(source: string, target: string, q: string | string[], hints?: (number | string)[],

@@ -74,3 +74,15 @@ export class ImportJob {
     }
 
 }
+
+export class DetectedLanguage {
+
+    public readonly billedCharacters: number;
+    public readonly detectedLanguage: string;
+
+    constructor(data: any) {
+        this.billedCharacters = data.billedCharacters;
+        this.detectedLanguage = data.detectedLanguage;
+    }
+
+}
