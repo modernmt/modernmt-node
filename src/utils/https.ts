@@ -57,7 +57,15 @@ export class Https implements HttpClient {
                     chunks += chunk;
                 });
                 res.on("end", () => {
-                    const json = JSON.parse(chunks);
+                    let json;
+
+                    try {
+                        json = JSON.parse(chunks);
+                    }
+                    catch (e) {
+                        return reject(e);
+                    }
+
                     if (json.status >= 300 || json.status < 200)
                         return reject(new ModernMTException(json.status, json.error.type, json.error.message));
 
