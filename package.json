@@ -25,8 +25,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@types/node": "^16.11.47",
-    "typescript": "^4.7.4",
+    "@types/node": "^16.11.68",
+    "typescript": "^4.8.4",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
   },
