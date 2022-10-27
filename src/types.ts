@@ -20,7 +20,8 @@ export type TranslateOptions = {
     projectId?: string,
     multiline?: boolean,
     timeout?: number,
-    format?: string
+    format?: string,
+    altTranslations?: number
 }
 
 export class Translation {
@@ -30,6 +31,7 @@ export class Translation {
     public readonly billedCharacters: number;
     public readonly contextVector?: string;
     public readonly detectedLanguage?: string;
+    public readonly altTranslations?: string[];
 
     constructor(data: any) {
         this.translation = data.translation;
@@ -38,6 +40,7 @@ export class Translation {
 
         if (data.contextVector) this.contextVector = data.contextVector;
         if (data.detectedLanguage) this.detectedLanguage = data.detectedLanguage;
+        if (data.altTranslations) this.altTranslations = data.altTranslations;
     }
 
 }
