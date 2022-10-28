@@ -8,12 +8,15 @@ export class ModernMT {
     private readonly http: HttpClient;
     public readonly memories: MemoryServices;
 
-    constructor(apiKey: string, platform = "modernmt-node", platformVersion = "1.0.11") {
+    constructor(apiKey: string, platform = "modernmt-node", platformVersion = "1.0.11", apiClient?: number) {
         const headers: any = {
             "MMT-ApiKey": apiKey,
             "MMT-Platform": platform,
             "MMT-PlatformVersion": platformVersion
         };
+
+        if (apiClient)
+            headers["MMT-ApiClient"] = apiClient;
 
         if (typeof fetch === "function")
             this.http = new Fetch("https://api.modernmt.com", headers);
