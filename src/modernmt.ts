@@ -55,7 +55,8 @@ export class ModernMT {
             project_id: options ? options.projectId : undefined,
             multiline: options ? options.multiline : undefined,
             timeout: options ? options.timeout : undefined,
-            format: options ? options.format : undefined
+            format: options ? options.format : undefined,
+            alt_translations: options ? options.altTranslations : undefined
         });
 
         if (!Array.isArray(q))
