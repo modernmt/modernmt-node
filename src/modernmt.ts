@@ -8,7 +8,7 @@ export class ModernMT {
     private readonly http: HttpClient;
     public readonly memories: MemoryServices;
 
-    constructor(apiKey: string, platform = "modernmt-node", platformVersion = "1.0.11", apiClient?: number) {
+    constructor(apiKey: string, platform = "modernmt-node", platformVersion = "1.1.0", apiClient?: number) {
         const headers: any = {
             "MMT-ApiKey": apiKey,
             "MMT-Platform": platform,
