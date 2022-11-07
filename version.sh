@@ -10,5 +10,5 @@ fi
 npm version --no-git-tag-version "$VERSION"
 
 header_match="    constructor\(apiKey: string, platform = \"modernmt-node\", platformVersion = "
-header_ver="    constructor\(apiKey: string, platform = \"modernmt-node\", platformVersion = \"${VERSION}\"\) {"
+header_ver="    constructor\(apiKey: string, platform = \"modernmt-node\", platformVersion = \"${VERSION}\", apiClient?: number\) {"
 sed -i -E "/$header_match/s/.*/$header_ver/" src/modernmt.ts
