@@ -18,7 +18,7 @@ export class ModernMT {
         if (apiClient)
             headers["MMT-ApiClient"] = apiClient;
 
-        if (typeof fetch === "function")
+        if (typeof window !== "undefined")
             this.http = new Fetch("https://api.modernmt.com", headers);
         else
             this.http = new Https("api.modernmt.com", headers);
