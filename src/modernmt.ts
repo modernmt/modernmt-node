@@ -23,7 +23,7 @@ export class ModernMT {
         else
             this.http = new Https("api.modernmt.com", headers);
 
-        this.memories = new MemoryServices(this);
+        this.memories = new MemoryServices(this.http);
     }
 
     listSupportedLanguages(): Promise<string[]> {
@@ -106,8 +106,8 @@ export class MemoryServices {
 
     private readonly http: HttpClient;
 
-    constructor(mmt: ModernMT) {
-        this.http = (<any>mmt).http;
+    constructor(http: HttpClient) {
+        this.http = http;
     }
 
     async list(): Promise<Memory[]> {
