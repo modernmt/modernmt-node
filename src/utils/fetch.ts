@@ -4,29 +4,25 @@ import {ModernMTException, HttpClient} from "../types";
 export class Fetch implements HttpClient {
 
     private readonly baseUrl: string;
-    private readonly headers: any;
+    private readonly headers?: any;
 
     constructor(baseUrl: string, headers?: any) {
         this.baseUrl = baseUrl;
-        this.headers = headers;
+
+        if (headers)
+            this.headers = headers;
     }
 
     async send(cls: any, method: string, path: string, data?: any, files?: any): Promise<any> {
         const endpoint = `${this.baseUrl}${path}`;
         const options: any = {
-            headers: {
-                ...this.headers,
-                "X-HTTP-Method-Override": method
-            },
+            headers: Object.assign({"X-HTTP-Method-Override": method}, this.headers),
             method: "post"
         };
 
         let formData: FormData;
         if (files) {
-            const form = {
-                ...data,
-                ...files
-            };
+            const form = Object.assign({}, files, data);
             formData = new FormData();
 
             for (let [key, value] of Object.entries(form)) {

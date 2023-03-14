@@ -6,31 +6,26 @@ import FormData from "form-data";
 export class Https implements HttpClient {
 
     private readonly host: string;
-    private readonly headers: any;
+    private readonly headers?: any;
 
     constructor(host: string, headers?: any) {
         this.host = host;
-        this.headers = headers;
+
+        if (headers)
+            this.headers = headers;
     }
 
     send(cls: any, method: string, path: string, data?: any, files?: any): Promise<any> {
-        const options = {
+        const options: any = {
             host: this.host,
-            headers: {
-                ...this.headers,
-                "Content-Type": "application/json",
-                "X-HTTP-Method-Override": method
-            },
+            headers: Object.assign({"X-HTTP-Method-Override": method}, this.headers),
             method: "post",
             path
         };
 
         let formData: FormData;
         if (files) {
-            const form = {
-                ...data,
-                ...files
-            };
+            const form = Object.assign({}, files, data);
             formData = new FormData();
 
             for (let [key, value] of Object.entries(form)) {
@@ -42,11 +37,13 @@ export class Https implements HttpClient {
                 formData.append(key, value);
             }
 
-            delete options.headers["Content-Type"];
             options.headers = {
                 ...options.headers,
                 ...formData.getHeaders()
             };
+        }
+        else {
+            options.headers["Content-Type"] = "application/json";
         }
 
         return new Promise((resolve, reject) => {
