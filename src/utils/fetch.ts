@@ -13,10 +13,10 @@ export class Fetch implements HttpClient {
             this.headers = headers;
     }
 
-    async send(cls: any, method: string, path: string, data?: any, files?: any): Promise<any> {
+    async send(cls: any, method: string, path: string, data?: any, files?: any, headers?: any): Promise<any> {
         const endpoint = `${this.baseUrl}${path}`;
         const options: any = {
-            headers: Object.assign({"X-HTTP-Method-Override": method}, this.headers),
+            headers: Object.assign({"X-HTTP-Method-Override": method}, this.headers, headers),
             method: "post"
         };
 

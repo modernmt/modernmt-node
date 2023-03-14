@@ -15,10 +15,10 @@ export class Https implements HttpClient {
             this.headers = headers;
     }
 
-    send(cls: any, method: string, path: string, data?: any, files?: any): Promise<any> {
+    send(cls: any, method: string, path: string, data?: any, files?: any, headers?: any): Promise<any> {
         const options: any = {
             host: this.host,
-            headers: Object.assign({"X-HTTP-Method-Override": method}, this.headers),
+            headers: Object.assign({"X-HTTP-Method-Override": method}, this.headers, headers),
             method: "post",
             path
         };

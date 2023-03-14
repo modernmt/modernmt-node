@@ -1,6 +1,6 @@
 /** @internal */
 export interface HttpClient {
-    send: (cls: any, method: string, path: string, data?: any, files?: any) => Promise<any>
+    send: (cls: any, method: string, path: string, data?: any, files?: any, headers?: any) => Promise<any>
 }
 
 export class ModernMTException extends Error {
