@@ -1,12 +1,25 @@
-import {DetectedLanguage, HttpClient, ImportJob, Memory, TranslateOptions, Translation} from "./types";
+import {
+    BatchTranslation,
+    DetectedLanguage,
+    HttpClient,
+    ImportJob,
+    Memory,
+    ModernMTException,
+    TranslateOptions,
+    Translation
+} from "./types";
 import {Https} from "./utils/https";
 import {Fetch} from "./utils/fetch";
 import {createReadStream} from "fs";
+import * as jose from 'jose'
 
 export class ModernMT {
 
     private readonly http: HttpClient;
     public readonly memories: MemoryServices;
+
+    private batchPublicKey: jose.KeyLike | undefined;
+    private batchPublicKeyTimestamp: number = 0;
 
     constructor(apiKey: string, platform = "modernmt-node", platformVersion = "1.1.0", apiClient?: number) {
         const headers: any = {
@@ -69,6 +82,33 @@ export class ModernMT {
         return translations;
     }
 
+    async batchTranslate(webhook: string, source: string, target: string, q: string | string[],
+                         hints?: (number | string)[], contextVector?: string,
+                         options?: TranslateOptions): Promise<boolean> {
+        const data = {
+            webhook,
+            source: source ? source : undefined,
+            target,
+            q,
+            context_vector: contextVector ? contextVector : undefined,
+            hints: hints ? hints.join(",") : undefined,
+            project_id: options ? options.projectId : undefined,
+            multiline: options ? options.multiline : undefined,
+            format: options ? options.format : undefined,
+            alt_translations: options ? options.altTranslations : undefined,
+            metadata: options ? options.metadata : undefined
+        };
+
+        let headers;
+        if (options && options.idempotencyKey) {
+            headers = { "x-idempotency-key": options.idempotencyKey };
+        }
+
+        const res = await this.http.send(null, "post", "/translate/batch", data, null, headers);
+
+        return res.enqueued;
+    }
+
     async getContextVector(source: string, targets: string | string[], text: string,
                            hints?: (number | string)[], limit?: number): Promise<string | Map<string, string>> {
         const res = await this.http.send(null, "get", "/context-vector", {
@@ -98,6 +138,43 @@ export class ModernMT {
         });
 
         return Array.isArray(targets) ? res.vectors : res.vectors[<string>targets];
+    }
+
+    async handleCallback(data: any, signature: string): Promise<BatchTranslation> {
+        if (!this.batchPublicKeyTimestamp)
+            await this.refreshBatchPublicKey();
+
+        if ((Date.now() - this.batchPublicKeyTimestamp) > 1000 * 60 * 60) {  // key is older than 1 hour
+            try {
+                await this.refreshBatchPublicKey();
+            }
+            catch (e) {
+                // ignore
+            }
+        }
+
+        await jose.jwtVerify(signature, this.batchPublicKey as jose.KeyLike);
+
+        const {result, metadata} = data;
+
+        if (result.error) {
+            const {type, message} = result.error;
+            throw new ModernMTException(result.status, type, message, metadata);
+        }
+
+        return new BatchTranslation(data);
+    }
+
+    private async refreshBatchPublicKey(): Promise<void> {
+        const key = (await this.http.send(null, "get", "/translate/batch/key")).publicKey;
+        const alg = 'RS256';
+
+        if (typeof window !== "undefined")
+            this.batchPublicKey = await jose.importSPKI(window.atob(key), alg);
+        else
+            this.batchPublicKey = await jose.importSPKI(Buffer.from(key, 'base64').toString(), alg);
+
+        this.batchPublicKeyTimestamp = Date.now();
     }
 
 }

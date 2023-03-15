@@ -6,11 +6,15 @@ export interface HttpClient {
 export class ModernMTException extends Error {
 
     public readonly status: number;
+    public readonly metadata?: any;
 
-    constructor(status: number, type: string, message: string) {
+    constructor(status: number, type: string, message: string, metadata?: any) {
         super(message);
         this.name = type;
         this.status = status;
+
+        if (metadata)
+            this.metadata = metadata;
     }
 
 }
@@ -21,7 +25,9 @@ export type TranslateOptions = {
     multiline?: boolean,
     timeout?: number,
     format?: string,
-    altTranslations?: number
+    altTranslations?: number,
+    idempotencyKey?: string,
+    metadata?: any
 }
 
 export class Translation {
@@ -86,6 +92,20 @@ export class DetectedLanguage {
     constructor(data: any) {
         this.billedCharacters = data.billedCharacters;
         this.detectedLanguage = data.detectedLanguage;
+    }
+
+}
+
+export class BatchTranslation {
+
+    public readonly data: Translation;
+    public readonly metadata?: any;
+
+    constructor(data: any) {
+        this.data = new Translation(data.result.data);
+
+        if (data.metadata)
+            this.metadata = data.metadata;
     }
 
 }
