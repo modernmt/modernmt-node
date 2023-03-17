@@ -11,7 +11,7 @@ import {
 import {Https} from "./utils/https";
 import {Fetch} from "./utils/fetch";
 import {createReadStream} from "fs";
-import * as jose from 'jose'
+import * as jose from "jose";
 
 export class ModernMT {
 
