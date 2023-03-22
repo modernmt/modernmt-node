@@ -98,14 +98,23 @@ export class DetectedLanguage {
 
 export class BatchTranslation {
 
-    public readonly data: Translation;
+    public readonly data: Translation | Translation[];
     public readonly metadata?: any;
 
     constructor(data: any) {
-        this.data = new Translation(data.result.data);
+        const {result, metadata} = data;
 
-        if (data.metadata)
-            this.metadata = data.metadata;
+        if (Array.isArray(result.data)) {
+            this.data = [];
+            for (const el of result.data)
+                this.data.push(new Translation(el))
+        }
+        else {
+            this.data = new Translation(result.data);
+        }
+
+        if (metadata)
+            this.metadata = metadata;
     }
 
 }
