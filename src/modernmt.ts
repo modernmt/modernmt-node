@@ -141,7 +141,7 @@ export class ModernMT {
     }
 
     async handleCallback(data: any, signature: string): Promise<BatchTranslation> {
-        if (!this.batchPublicKeyTimestamp)
+        if (!this.batchPublicKey)
             await this.refreshBatchPublicKey();
 
         if ((Date.now() - this.batchPublicKeyTimestamp) > 1000 * 60 * 60) {  // key is older than 1 hour
