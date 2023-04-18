@@ -22,7 +22,7 @@ export class ModernMT {
     private batchPublicKey: jose.KeyLike | undefined;
     private batchPublicKeyTimestamp: number = 0;
 
-    constructor(apiKey: string, platform = "modernmt-node", platformVersion = "1.2.1", apiClient?: number) {
+    constructor(apiKey: string, platform = "modernmt-node", platformVersion = "1.2.2", apiClient?: number) {
         const headers: any = {
             "MMT-ApiKey": apiKey,
             "MMT-Platform": platform,
