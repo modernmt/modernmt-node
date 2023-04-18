@@ -6,7 +6,8 @@ import {
     Memory,
     ModernMTException,
     TranslateOptions,
-    Translation
+    Translation,
+    User
 } from "./types";
 import {Https} from "./utils/https";
 import {Fetch} from "./utils/fetch";
@@ -175,6 +176,10 @@ export class ModernMT {
             this.batchPublicKey = await jose.importSPKI(Buffer.from(key, 'base64').toString(), alg);
 
         this.batchPublicKeyTimestamp = Date.now();
+    }
+
+    me(): Promise<User> {
+        return this.http.send(User, "get", "/users/me");
     }
 
 }

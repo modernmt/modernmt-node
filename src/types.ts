@@ -118,3 +118,54 @@ export class BatchTranslation {
     }
 
 }
+
+export class User {
+
+    public readonly id: number;
+    public readonly name: string;
+    public readonly email: string;
+    public readonly registrationDate: string;
+    public readonly country: string;
+    public readonly isBusiness: number;
+    public readonly status: string;
+    public readonly billingPeriod: BillingPeriod;
+
+    constructor(data: any) {
+        this.id = data.id;
+        this.name = data.name;
+        this.email = data.email;
+        this.registrationDate = data.registrationDate;
+        this.country = data.country;
+        this.isBusiness = data.isBusiness;
+        this.status = data.status;
+
+        this.billingPeriod = new BillingPeriod(data.billingPeriod);
+    }
+
+}
+
+class BillingPeriod {
+
+    public readonly begin: string;
+    public readonly end: string;
+    public readonly chars: number;
+    public readonly plan: string;
+    public readonly planDescription: string;
+    public readonly planForCatTool: boolean;
+    public readonly amount: number;
+    public readonly currency: string;
+    public readonly currencySymbol: string;
+
+    constructor(data: any) {
+        this.begin = data.begin;
+        this.end = data.end;
+        this.chars = data.chars;
+        this.plan = data.plan;
+        this.planDescription = data.planDescription;
+        this.planForCatTool = data.planForCatTool;
+        this.amount = data.amount;
+        this.currency = data.currency;
+        this.currencySymbol = data.currencySymbol;
+    }
+
+}
