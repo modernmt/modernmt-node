@@ -156,6 +156,9 @@ export class ModernMT {
 
         await jose.jwtVerify(signature, this.batchPublicKey as jose.KeyLike);
 
+        if (typeof data === 'string')
+            data = JSON.parse(data);
+
         const {result, metadata} = data;
 
         if (result.error) {
