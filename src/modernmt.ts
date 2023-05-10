@@ -20,7 +20,7 @@ export class ModernMT {
     public readonly memories: MemoryServices;
 
     private batchPublicKey: jose.KeyLike | undefined;
-    private batchPublicKeyTimestamp: number = 0;
+    private batchPublicKeyTimestampMs: number = 0;
 
     constructor(apiKey: string, platform = "modernmt-node", platformVersion = "1.2.3", apiClient?: number) {
         const headers: any = {
@@ -145,7 +145,7 @@ export class ModernMT {
         if (!this.batchPublicKey)
             await this.refreshBatchPublicKey();
 
-        if ((Date.now() - this.batchPublicKeyTimestamp) > 1000 * 60 * 60) {  // key is older than 1 hour
+        if ((Date.now() - this.batchPublicKeyTimestampMs) > 1000 * 3600) {  // key is older than 1 hour
             try {
                 await this.refreshBatchPublicKey();
             }
@@ -178,7 +178,7 @@ export class ModernMT {
         else
             this.batchPublicKey = await jose.importSPKI(Buffer.from(key, 'base64').toString(), alg);
 
-        this.batchPublicKeyTimestamp = Date.now();
+        this.batchPublicKeyTimestampMs = Date.now();
     }
 
     me(): Promise<User> {
