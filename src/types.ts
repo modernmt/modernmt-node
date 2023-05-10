@@ -101,16 +101,17 @@ export class BatchTranslation {
     public readonly data: Translation | Translation[];
     public readonly metadata?: any;
 
-    constructor(data: any) {
-        const {result, metadata} = data;
+    constructor(body: any) {
+        const {result, metadata} = body;
+        const {data} = result;
 
-        if (Array.isArray(result.data)) {
+        if (Array.isArray(data)) {
             this.data = [];
-            for (const el of result.data)
+            for (const el of data)
                 this.data.push(new Translation(el))
         }
         else {
-            this.data = new Translation(result.data);
+            this.data = new Translation(data);
         }
 
         if (metadata)

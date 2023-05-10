@@ -141,7 +141,7 @@ export class ModernMT {
         return Array.isArray(targets) ? res.vectors : res.vectors[<string>targets];
     }
 
-    async handleCallback(data: any, signature: string): Promise<BatchTranslation> {
+    async handleCallback(body: any, signature: string): Promise<BatchTranslation> {
         if (!this.batchPublicKey)
             await this.refreshBatchPublicKey();
 
@@ -156,17 +156,17 @@ export class ModernMT {
 
         await jose.jwtVerify(signature, this.batchPublicKey as jose.KeyLike);
 
-        if (typeof data === 'string')
-            data = JSON.parse(data);
+        if (typeof body === 'string')
+            body = JSON.parse(body);
 
-        const {result, metadata} = data;
+        const {result, metadata} = body;
 
         if (result.error) {
             const {type, message} = result.error;
             throw new ModernMTException(result.status, type, message, metadata);
         }
 
-        return new BatchTranslation(data);
+        return new BatchTranslation(body);
     }
 
     private async refreshBatchPublicKey(): Promise<void> {
