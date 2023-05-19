@@ -46,7 +46,7 @@ export class ModernMT {
 
     async detectLanguage(q: string | string[], format?: string): Promise<DetectedLanguage | DetectedLanguage[]> {
         const res = await this.http.send(null, "get", "/translate/detect", {q, format});
-        if (!Array.isArray(q))
+        if (!Array.isArray(res))
             return new DetectedLanguage(res);
 
         const languages = [];
@@ -73,7 +73,7 @@ export class ModernMT {
             alt_translations: options ? options.altTranslations : undefined
         });
 
-        if (!Array.isArray(q))
+        if (!Array.isArray(res))
             return new Translation(res);
 
         const translations = []
@@ -120,7 +120,7 @@ export class ModernMT {
             limit: limit ? limit : undefined
         });
 
-        return Array.isArray(targets) ? res.vectors : res.vectors[<string>targets];
+        return Object.keys(res.vectors).length > 1 ? res.vectors : res.vectors[<string>targets];
     }
 
     async getContextVectorFromFile(source: string, targets: string | string[], file: any, hints?: (number | string)[],
@@ -138,7 +138,7 @@ export class ModernMT {
             content: file
         });
 
-        return Array.isArray(targets) ? res.vectors : res.vectors[<string>targets];
+        return Object.keys(res.vectors).length > 1 ? res.vectors : res.vectors[<string>targets];
     }
 
     async handleCallback(body: any, signature: string): Promise<BatchTranslation> {
