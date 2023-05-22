@@ -120,7 +120,7 @@ export class ModernMT {
             limit: limit ? limit : undefined
         });
 
-        return Object.keys(res.vectors).length > 1 ? res.vectors : res.vectors[<string>targets];
+        return Array.isArray(targets) ? res.vectors : res.vectors[<string>targets];
     }
 
     async getContextVectorFromFile(source: string, targets: string | string[], file: any, hints?: (number | string)[],
@@ -138,7 +138,7 @@ export class ModernMT {
             content: file
         });
 
-        return Object.keys(res.vectors).length > 1 ? res.vectors : res.vectors[<string>targets];
+        return Array.isArray(targets) ? res.vectors : res.vectors[<string>targets];
     }
 
     async handleCallback(body: any, signature: string): Promise<BatchTranslation> {
