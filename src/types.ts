@@ -170,3 +170,13 @@ class BillingPeriod {
     }
 
 }
+
+export class QualityEstimation {
+
+        public readonly score: number;
+
+        constructor(data: any) {
+            this.score = data.score;
+        }
+
+}
