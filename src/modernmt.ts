@@ -5,7 +5,6 @@ import {
     ImportJob,
     Memory,
     ModernMTException,
-    QualityEstimation,
     TranslateOptions,
     Translation,
     User
@@ -184,22 +183,6 @@ export class ModernMT {
 
     me(): Promise<User> {
         return this.http.send(User, "get", "/users/me");
-    }
-
-    async qe(source: string, target: string, sentence: string | string[],
-             translation: string | string[]): Promise<QualityEstimation | QualityEstimation[]> {
-        const res = await this.http.send(null, "get", "/qe", {
-            source, target, sentence, translation
-        });
-
-        if (!Array.isArray(res))
-            return new QualityEstimation(res);
-
-        const qes = [];
-        for (const el of res)
-            qes.push(new QualityEstimation(el));
-
-        return qes;
     }
 
 }
