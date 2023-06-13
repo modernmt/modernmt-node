@@ -27,8 +27,7 @@ export type TranslateOptions = {
     format?: string,
     altTranslations?: number,
     idempotencyKey?: string,
-    metadata?: any,
-    session?: string
+    metadata?: any
 }
 
 export class Translation {
