@@ -71,7 +71,8 @@ export class ModernMT {
             multiline: options ? options.multiline : undefined,
             timeout: options ? options.timeout : undefined,
             format: options ? options.format : undefined,
-            alt_translations: options ? options.altTranslations : undefined
+            alt_translations: options ? options.altTranslations : undefined,
+            session: options ? options.session : undefined
         });
 
         if (!Array.isArray(res))
@@ -98,7 +99,8 @@ export class ModernMT {
             multiline: options ? options.multiline : undefined,
             format: options ? options.format : undefined,
             alt_translations: options ? options.altTranslations : undefined,
-            metadata: options ? options.metadata : undefined
+            metadata: options ? options.metadata : undefined,
+            session: options ? options.session : undefined
         };
 
         let headers;
@@ -246,14 +248,28 @@ export class MemoryServices {
     }
 
     add(id: number | string, source: string, target: string, sentence: string, translation: string,
-              tuid?: string): Promise<ImportJob> {
-        const data = {source, target, sentence, translation, tuid: tuid ? tuid : undefined};
+        tuid?: string, session?: string): Promise<ImportJob> {
+        const data = {
+            source,
+            target,
+            sentence,
+            translation,
+            tuid: tuid ? tuid : undefined,
+            session: session ? session : undefined
+        };
         return this.http.send(ImportJob, "post", `/memories/${id}/content`, data);
     }
 
     replace(id: number | string, tuid: string, source: string, target: string,
-                  sentence: string, translation: string): Promise<ImportJob> {
-        const data = {tuid, source, target, sentence, translation};
+            sentence: string, translation: string, session?: string): Promise<ImportJob> {
+        const data = {
+            tuid,
+            source,
+            target,
+            sentence,
+            translation,
+            session: session ? session : undefined
+        };
         return this.http.send(ImportJob, "put", `/memories/${id}/content`, data);
     }
 
