@@ -1,6 +1,7 @@
 import {
     BatchTranslation,
     DetectedLanguage,
+    GlossaryTerm,
     HttpClient,
     ImportJob,
     Memory,
@@ -75,6 +76,8 @@ export class ModernMT {
             data.format = options.format;
             data.alt_translations = options.altTranslations;
             data.session = options.session;
+            data.ignore_glossary_case = options.ignoreGlossaryCase
+            data.glossaries = options.glossaries
         }
 
         const res = await this.http.send(null, "get", "/translate", data);
@@ -108,6 +111,8 @@ export class ModernMT {
             data.alt_translations = options.altTranslations;
             data.metadata = options.metadata;
             data.session = options.session;
+            data.ignore_glossary_case = options.ignoreGlossaryCase
+            data.glossaries = options.glossaries
         }
 
         let headers;
@@ -288,6 +293,36 @@ export class MemoryServices {
             compression
         }, {
             tmx
+        });
+    }
+
+    addToGlossary(id: number | string, terms: GlossaryTerm[], type: string, tuid?: string): Promise<ImportJob> {
+        const data = {
+            terms,
+            type,
+            tuid
+        };
+        return this.http.send(ImportJob, "post", `/memories/${id}/glossary`, data);
+    }
+
+    replaceInGlossary(id: number | string, terms: GlossaryTerm[], type: string, tuid?: string): Promise<ImportJob> {
+        const data = {
+            terms,
+            type,
+            tuid
+        };
+        return this.http.send(ImportJob, "put", `/memories/${id}/glossary`, data);
+    }
+
+    importGlossary(id: number | string, csv: any, type: string, compression?: string): Promise<ImportJob> {
+        if (typeof csv === "string")
+            csv = createReadStream(csv);
+
+        return this.http.send(ImportJob, "post", `/memories/${id}/glossary`, {
+            type,
+            compression
+        }, {
+            csv
         });
     }
 

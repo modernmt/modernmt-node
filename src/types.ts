@@ -29,6 +29,8 @@ export type TranslateOptions = {
     idempotencyKey?: string,
     metadata?: any,
     session?: string
+    glossaries?: (number | string)[]
+    ignoreGlossaryCase?: boolean
 }
 
 export class Translation {
@@ -178,6 +180,18 @@ export class QualityEstimation {
 
     constructor(data: any) {
         this.score = data.score;
+    }
+
+}
+
+export class GlossaryTerm {
+
+    public readonly term: string;
+    public readonly language: string;
+
+    constructor(data: any) {
+        this.term = data.term;
+        this.language = data.language;
     }
 
 }
