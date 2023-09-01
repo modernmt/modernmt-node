@@ -59,21 +59,25 @@ export class ModernMT {
 
     async translate(source: string, target: string, q: string | string[], hints?: (number | string)[],
                     contextVector?: string, options?: TranslateOptions): Promise<Translation | Translation[]> {
-
-        const res = await this.http.send(null, "get", "/translate", {
-            source: source ? source : undefined,
+        const data: any = {
+            source,
             target,
             q,
-            context_vector: contextVector ? contextVector : undefined,
-            hints: hints ? hints.join(",") : undefined,
-            priority: options ? options.priority : undefined,
-            project_id: options ? options.projectId : undefined,
-            multiline: options ? options.multiline : undefined,
-            timeout: options ? options.timeout : undefined,
-            format: options ? options.format : undefined,
-            alt_translations: options ? options.altTranslations : undefined,
-            session: options ? options.session : undefined
-        });
+            context_vector: contextVector,
+            hints
+        };
+
+        if (options) {
+            data.priority = options.priority;
+            data.project_id = options.projectId;
+            data.multiline = options.multiline;
+            data.timeout = options.timeout;
+            data.format = options.format;
+            data.alt_translations = options.altTranslations;
+            data.session = options.session;
+        }
+
+        const res = await this.http.send(null, "get", "/translate", data);
 
         if (!Array.isArray(res))
             return new Translation(res);
@@ -88,20 +92,23 @@ export class ModernMT {
     async batchTranslate(webhook: string, source: string, target: string, q: string | string[],
                          hints?: (number | string)[], contextVector?: string,
                          options?: TranslateOptions): Promise<boolean> {
-        const data = {
+        const data: any = {
             webhook,
-            source: source ? source : undefined,
+            source,
             target,
             q,
-            context_vector: contextVector ? contextVector : undefined,
-            hints: hints ? hints.join(",") : undefined,
-            project_id: options ? options.projectId : undefined,
-            multiline: options ? options.multiline : undefined,
-            format: options ? options.format : undefined,
-            alt_translations: options ? options.altTranslations : undefined,
-            metadata: options ? options.metadata : undefined,
-            session: options ? options.session : undefined
+            context_vector: contextVector,
+            hints
         };
+
+        if (options) {
+            data.project_id = options.projectId;
+            data.multiline = options.multiline;
+            data.format = options.format;
+            data.alt_translations = options.altTranslations;
+            data.metadata = options.metadata;
+            data.session = options.session;
+        }
 
         let headers;
         if (options && options.idempotencyKey) {
@@ -119,8 +126,8 @@ export class ModernMT {
             source,
             targets,
             text,
-            hints: hints ? hints.join(",") : undefined,
-            limit: limit ? limit : undefined
+            hints,
+            limit
         });
 
         return Array.isArray(targets) ? res.vectors : res.vectors[<string>targets];
@@ -134,9 +141,9 @@ export class ModernMT {
         const res = await this.http.send(null, "get", "/context-vector", {
             source,
             targets,
-            hints: hints ? hints.join(",") : undefined,
-            limit: limit ? limit : undefined,
-            compression: compression ? compression : undefined
+            hints,
+            limit,
+            compression
         }, {
             content: file
         });
@@ -231,15 +238,15 @@ export class MemoryServices {
     create(name: string, description?: string, externalId?: string): Promise<Memory> {
         return this.http.send(Memory,"post", "/memories", {
             name,
-            description: description ? description : undefined,
-            external_id: externalId ? externalId : undefined
+            description,
+            external_id: externalId
         });
     }
 
     edit(id: number | string, name?: string, description?: string): Promise<Memory> {
         return this.http.send(Memory,"put", `/memories/${id}`, {
-            name: name ? name : undefined,
-            description: description ? description : undefined
+            name,
+            description
         });
     }
 
@@ -254,8 +261,8 @@ export class MemoryServices {
             target,
             sentence,
             translation,
-            tuid: tuid ? tuid : undefined,
-            session: session ? session : undefined
+            tuid,
+            session
         };
         return this.http.send(ImportJob, "post", `/memories/${id}/content`, data);
     }
@@ -268,7 +275,7 @@ export class MemoryServices {
             target,
             sentence,
             translation,
-            session: session ? session : undefined
+            session
         };
         return this.http.send(ImportJob, "put", `/memories/${id}/content`, data);
     }
@@ -278,7 +285,7 @@ export class MemoryServices {
             tmx = createReadStream(tmx);
 
         return this.http.send(ImportJob, "post", `/memories/${id}/content`, {
-            compression: compression ? compression : undefined
+            compression
         }, {
             tmx
         });

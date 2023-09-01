@@ -26,7 +26,7 @@ export class Fetch implements HttpClient {
             formData = new FormData();
 
             for (let [key, value] of Object.entries(form)) {
-                if (value === undefined)
+                if (value == null)
                     continue;
                 if (Array.isArray(value))
                     value = value.join(",");
@@ -38,7 +38,7 @@ export class Fetch implements HttpClient {
         }
         else {
             options.headers["Content-Type"] = "application/json";
-            options.body = JSON.stringify(data);
+            options.body = JSON.stringify(data, (_key, value) => value == null ? undefined : value);
         }
 
         const res = await fetch(endpoint, options);

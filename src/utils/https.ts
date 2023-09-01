@@ -29,7 +29,7 @@ export class Https implements HttpClient {
             formData = new FormData();
 
             for (let [key, value] of Object.entries(form)) {
-                if (value === undefined)
+                if (value == null)
                     continue;
                 if (Array.isArray(value))
                     value = value.join(",");
@@ -75,7 +75,8 @@ export class Https implements HttpClient {
             });
 
             if (data && !formData) {
-                req.write(Buffer.from(JSON.stringify(data)));
+                const json = JSON.stringify(data, (_key, value) => value == null ? undefined : value);
+                req.write(Buffer.from(json));
                 req.end();
             }
             else if (formData)
