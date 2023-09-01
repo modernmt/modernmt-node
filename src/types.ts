@@ -28,9 +28,10 @@ export type TranslateOptions = {
     altTranslations?: number,
     idempotencyKey?: string,
     metadata?: any,
-    session?: string
-    glossaries?: (number | string)[]
-    ignoreGlossaryCase?: boolean
+    session?: string,
+    glossaries?: (number | string)[],
+    ignoreGlossaryCase?: boolean,
+    maskProfanities?: boolean
 }
 
 export class Translation {

@@ -76,8 +76,9 @@ export class ModernMT {
             data.format = options.format;
             data.alt_translations = options.altTranslations;
             data.session = options.session;
-            data.ignore_glossary_case = options.ignoreGlossaryCase
-            data.glossaries = options.glossaries
+            data.ignore_glossary_case = options.ignoreGlossaryCase;
+            data.glossaries = options.glossaries;
+            data.mask_profanities = options.maskProfanities;
         }
 
         const res = await this.http.send(null, "get", "/translate", data);
@@ -111,8 +112,9 @@ export class ModernMT {
             data.alt_translations = options.altTranslations;
             data.metadata = options.metadata;
             data.session = options.session;
-            data.ignore_glossary_case = options.ignoreGlossaryCase
-            data.glossaries = options.glossaries
+            data.ignore_glossary_case = options.ignoreGlossaryCase;
+            data.glossaries = options.glossaries;
+            data.mask_profanities = options.maskProfanities;
         }
 
         let headers;
