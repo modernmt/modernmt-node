@@ -42,6 +42,7 @@ export class Translation {
     public readonly contextVector?: string;
     public readonly detectedLanguage?: string;
     public readonly altTranslations?: string[];
+    public readonly detectedProfanities?: boolean;
 
     constructor(data: any) {
         this.translation = data.translation;
@@ -51,6 +52,7 @@ export class Translation {
         if (data.contextVector) this.contextVector = data.contextVector;
         if (data.detectedLanguage) this.detectedLanguage = data.detectedLanguage;
         if (data.altTranslations) this.altTranslations = data.altTranslations;
+        if (data.detectedProfanities) this.detectedProfanities = data.detectedProfanities;
     }
 
 }
