@@ -204,7 +204,7 @@ export class ModernMT {
 
     async qe(source: string, target: string, sentence: string | string[],
              translation: string | string[]): Promise<QualityEstimation | QualityEstimation[]> {
-        const res = await this.http.send(null, "get", "/qe", {
+        const res = await this.http.send(null, "get", "/translate/qe", {
             source, target, sentence, translation
         });
 
