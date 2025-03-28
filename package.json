@@ -25,13 +25,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@types/node": "^20.12.13",
-    "typescript": "^5.4.5",
-    "webpack": "^5.91.0",
+    "@types/node": "^22.13.14",
+    "typescript": "^5.8.2",
+    "webpack": "^5.98.0",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "form-data": "^4.0.0",
-    "jose": "^5.3.0"
+    "form-data": "^4.0.2",
+    "jose": "^5.10.0"
   }
 }
