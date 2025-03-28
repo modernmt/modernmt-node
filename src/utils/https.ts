@@ -2,7 +2,6 @@ import {ModernMTException, HttpClient} from "../types";
 import {request} from "https";
 import FormData from "form-data";
 
-/** @internal */
 export class Https implements HttpClient {
 
     private readonly host: string;

@@ -1,4 +1,3 @@
-/** @internal */
 export interface HttpClient {
     send: (cls: any, method: string, path: string, data?: any, files?: any, headers?: any) => Promise<any>
 }

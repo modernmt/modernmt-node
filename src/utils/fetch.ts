@@ -1,6 +1,5 @@
 import {ModernMTException, HttpClient} from "../types";
 
-/** @internal */
 export class Fetch implements HttpClient {
 
     private readonly baseUrl: string;
